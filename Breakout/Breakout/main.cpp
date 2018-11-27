@@ -42,10 +42,9 @@ double t=0.0;
 double dt=1.0/30;
 GLdouble pitch=0.0f;
 shared_ptr<Paddle> paddle;
-
-//vector<shared_ptr<Brick>> bricks;
-
+vector<shared_ptr<Brick>> bricks;
 shared_ptr<Ball> ball;
+
 int ji=0, jd=0, punto =0;
 
 int mx=-1,my=-1;        // Previous mouse coordinates
@@ -80,7 +79,11 @@ void idle(){
         cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
         cout << "Pulse 'Z' para lanzar la Ball" << endl;
     }
-    punto= ball->colision(paddle, true);
+    
+    
+    
+    
+    
 //    ball->colision(c1, false);
     if(punto==1){
         ji++;
@@ -105,29 +108,13 @@ double getRand(double max, double min = 0) {
 
 void keyPressed(unsigned char key,int x,int y){
     srand(time(NULL));
-    double t1 = rand() % 2;
-    bool b=(ball->getPos().getX()==0);
-    //double t1 = getRand(1);
-    switch(key){
-        case GLUT_KEY_UP:
-        case 'O':
-        case 'o':
-            paddle->setVel(Vector3Dd(5,0,0)*-1);
-            break;
-        case GLUT_KEY_DOWN:
-        case 'L':
-        case 'l':
-            paddle->setVel(Vector3Dd(5,0,0)*1);
-            break;
 
+    switch(key){
         case 32:
-   
-            if(b){
-                if(t1 == 1){
-                    ball->setVel(Vector3Dd(-2,0,-2));
-                } else{
-                    ball->setVel(Vector3Dd(2,0,2));
-                }
+            if(ball->waitingForStart){
+                ball->waitingForStart = false;
+                ball->setVel(Vector3Dd(-0.3,0,-0.3
+                ));
             }
             break;
         case 27:
@@ -138,18 +125,39 @@ void keyPressed(unsigned char key,int x,int y){
 
 void keyReleased(unsigned char key,int x,int y){
     switch(key){
-        case GLUT_KEY_RIGHT:
-        case 'O':
-        case 'o':
-            paddle->setVel(Vector3Dd(0,0,0));
-            break;
-        case GLUT_KEY_DOWN:
-        case 'L':
-        case 'l':
-            paddle->setVel(Vector3Dd(0,0,0));
-            break;
         case 27:
             exit(0);
+            break;
+    }
+}
+
+void pressKey(int key, int xx, int yy) {
+    switch (key) {
+        case GLUT_KEY_LEFT :
+            paddle->setVel(Vector3Dd(1,0,0)*-1);
+            if (ball->waitingForStart) {
+                ball->setVel(Vector3Dd(1,0,0)*-1);
+            }
+            
+            break;
+        case GLUT_KEY_RIGHT :
+            paddle->setVel(Vector3Dd(1,0,0)*1);
+            if (ball->waitingForStart) {
+                ball->setVel(Vector3Dd(1,0,0)*1);;
+            }
+            break;
+    }
+}
+
+void releaseKey(int key, int x, int y) {
+    
+    switch (key) {
+        case GLUT_KEY_LEFT:
+        case GLUT_KEY_RIGHT:
+            paddle->setVel(Vector3Dd(0,0,0));
+            if (ball->waitingForStart) {
+                ball->setVel(Vector3Dd(0,0,0));;
+            }
             break;
     }
 }
@@ -195,26 +203,17 @@ void reshape(int width,int height){
 
 
 int main(int argc, char** argv) {
-    cout << "Jugador izquierda (Teclas W y S) - Jugador derecha (Teclas O y L)" << endl;
-    cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
-    cout << "Pulse 'Z' para lanzar la Ball" << endl;
     cam.setRot(Vector3Dd(0, 0, 90));
     cam.setPos(Vector3Dd(0,35,0));
     
-    
-    //shared_ptr<Toroide> tor;
-    //shared_ptr<Pared> p;
-    
     ball = make_shared<Ball> ();
-    ball->setPos(Vector3Dd(0,0,0));
-    ball->setVel(Vector3Dd(0,0, 0));
+    ball->setPos(Vector3Dd(0,0,15));
+    ball->setVel(Vector3Dd(0,0,0));
     ball->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
     ball->setF(Vector3Dd(0,-0.98,0));
     ball->setM(1);
     ball->setR(.6);
-    
-    e.add(ball);
-    
+    e.ball = ball;
     
     paddle = make_shared<Paddle> ();
     paddle->setPos(Vector3Dd(0,0,17));
@@ -223,15 +222,15 @@ int main(int argc, char** argv) {
     paddle->setF(Vector3Dd(0,-0.98,0));
     paddle->setM(1);
     paddle->setS(1);
-    e.add(paddle);
+    e.paddle = paddle;
     
     for (int i=0; i<11; i++) {
         for (int j=0; j<5; j++) {
             shared_ptr<Brick> brick = make_shared<Brick> ();
+            bricks.push_back(brick);
             brick->setPos(Vector3Dd(-30+(i*6),0,-17 + (j*3)));
             brick->setVel(Vector3Dd(0,0,0));
             
-           
             if (j==0){
                 brick->setCol(Vector3Dd(29.0/255.0, 194.0/255.0, 66.0/255.0));
             } else if (j==1){
@@ -265,6 +264,9 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyReleased);
+    
+    glutSpecialFunc(pressKey);
+    glutSpecialUpFunc(releaseKey);
     //glutMotionFunc(&mouseMoved);
     //glutMouseFunc(&mousePress);
     glutMainLoop();

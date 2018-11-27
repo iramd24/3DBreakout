@@ -12,7 +12,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "Vector3D.h"
+#include "Vector3d.h"
 #include "Solid.h"
 class Sphere: public Solid{
     //No encapsulado
@@ -25,7 +25,7 @@ public:
     inline void setR(double r);
     inline void render();
     virtual void update(double dt);
-    
+    inline virtual int collision(spSolid s);
 protected:
     //Encapsulado, necesita metodos de acceso
     double r;
@@ -43,6 +43,10 @@ spSolid Sphere::clone(){
     shared_ptr<Sphere> e=make_shared<Sphere>(*this);
     //return new Sphere(*this);
     return e;
+}
+
+int Sphere::collision(spSolid s){
+    return 0;
 }
 
 Sphere:: Sphere(const Sphere &e): Solid(e){

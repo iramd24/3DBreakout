@@ -24,6 +24,7 @@ public:
     Cube(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double s);
     Cube(const Cube &c);
     virtual spSolid clone();
+    inline virtual int collision(spSolid s);
     inline double getS();
     inline void setS(double s);
     inline virtual void render();
@@ -48,6 +49,10 @@ spSolid Cube::clone(){
     shared_ptr<Cube> e=make_shared<Cube>(*this);
     //return new Esfera(*this);
     return e;
+}
+
+int Cube::collision(spSolid s){
+    return 0;
 }
 
 double Cube::getS(){

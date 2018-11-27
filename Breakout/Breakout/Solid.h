@@ -10,7 +10,7 @@
 #define Solid_h
 
 
-#include "Vector3D.h"
+#include "Vector3d.h"
 class Solid;
 
 using spSolid= shared_ptr<Solid>;
@@ -34,6 +34,8 @@ public:
     inline void setPos(Vector3Dd p);
     inline void setVel(Vector3Dd v);
     inline void setCol(Vector3Dd c);
+    virtual int collision(spSolid s){return 0;};
+    virtual int collisionPaddle(spSolid s){return 0;};
     //inline void colision(spSolid s);
     virtual void update(double dt);
     friend ostream& operator<<(ostream &os, const Solid& s);

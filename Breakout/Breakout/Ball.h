@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "Vector3D.h"
+#include "Vector3d.h"
 #include "Sphere.h"
 #include "Solid.h"
 class Ball: public Sphere{
@@ -24,7 +24,9 @@ public:
     Ball(const Ball &e): Sphere(e){};
     spSolid clone();
     inline void update(double dt);
-    inline int colision(spSolid s, bool derecha);
+    inline int collision(spSolid s);
+    inline int collisionPaddle(spSolid s);
+    bool waitingForStart = true;
     
 };
 
@@ -38,47 +40,97 @@ void Ball::update(double dt){
     vel=vel+f/m*dt;
     pos=pos+vel*dt;
     
+    double ballX = pos.getX();
+    
     //Checa colisiones conla parate superior
     if(-pos.getZ()>19.2){
-        vel.setZ(vel.getZ()*-1);
+        vel.setZ(-vel.getZ());
+    } else if(pos.getY()<0){
+        vel.setY(-vel.getY());
+        pos.setY(0);
+    } else if(ballX > 33 || ballX < -33){
+        vel.setX(-vel.getX());
     }
     
-    if(pos.getY()<0){
-        vel.setY(vel.getY()*-1);
-        pos.setY(0);
-    }
+    
+    
 }
 
 //Colision con paletas y regreso al origen
-int Ball::colision(spSolid s, bool derecha){
-    //cout<< "Sphere " << pos << endl;
-    //cout << "paleta " << s->getPos() << endl;
-    //cout << "pos " << pos << endl;
-    //if(pos.getX()<s->getPos().getX()+2 && pos.getX()>s->getPos().getX()-2  && pos.getZ()==s->getPos().getZ()-3.5 && this->getVel().getZ() > 0)
-    if(pos.getX()<s->getPos().getX()+2 && pos.getX()>s->getPos().getX()-2  && pos.getZ()<s->getPos().getZ()-3.30 && pos.getZ()>s->getPos().getZ()-3.65 && this->getVel().getZ() > 0){
-        vel.setX(vel.getX()*1.2);
-        vel.setZ(vel.getZ()*-1.2);
-    } else if(pos.getX()<s->getPos().getX()+2 && pos.getX()>s->getPos().getX()-2  && pos.getZ()>s->getPos().getZ()+3.35 && pos.getZ()<s->getPos().getZ()+3.60 && this->getVel().getZ() < 0){
-        vel.setX(vel.getX()*1.2);
-        vel.setZ(vel.getZ()*-1.2);
-    } else if(derecha && pos.getX()>28  && pos.getZ()>s->getPos().getZ()-3.5 && pos.getZ()<s->getPos().getZ()+3.5 && this->getVel().getX()>0){
-        //cout << "entro" << endl;
-        vel.setX(vel.getX()*-1.2);
-        vel.setZ(vel.getZ()*1.2);
-    } else if(!derecha && pos.getX()<-28  && pos.getZ()>s->getPos().getZ()-3.5 && pos.getZ()< s->getPos().getZ()+3.5 && this->getVel().getX()<0){
-        //cout << "entro" << endl;
-        vel.setX(vel.getX()*-1.2);
-        vel.setZ(vel.getZ()*1.2);
-    } else if(pos.getX()>33){
-        vel = Vector3Dd(0,0,0);
-        pos = Vector3Dd(0,0,0);
+int Ball::collision(spSolid solid){
+    
+    double ballX = pos.getX();
+    double ballZ = pos.getZ();
+    double solidX = solid->getPos().getX();
+    double solidZ = solid->getPos().getZ();
+    
+    if ((ballZ-0.6 < solidZ + 1) && (ballZ+0.6 > solidZ-1) && (ballX+0.6 < solidX -2.5) && (ballX+0.6 > solidX -2.6) && (vel.getX() > 0)) {
+        vel.setX(-vel.getX());
         return 1;
-    } else if(pos.getX()<-33){
-        vel = Vector3Dd(0,0,0);
-        pos = Vector3Dd(0,0,0);
-        return 2;
     }
+    
+    if ((ballZ-0.6 < solidZ + 1) && (ballZ+0.6 > solidZ-1) && (ballX-0.6 > solidX +2.5) && (ballX -0.6 < solidX +2.6) && (vel.getX() < 0)) {
+        vel.setX(-vel.getX());
+        return 1;
+    }
+    
+    if ((ballX-0.6 < solidX+2.5) && (ballX+0.6 > solidX-2.5) && (ballZ+0.6 < solidZ - 1) && (ballZ+0.6 > solidZ - 1.1) && (vel.getZ() > 0)) {
+        //vel.setX(vel.getX()*1);
+        vel.setZ(-vel.getZ());
+        return 1;
+    }
+    
+    if ((ballX-0.6 < solidX+2.5) && (ballX+0.6 > solidX-2.5) && (ballZ-0.6 > solidZ + 1) && (ballZ-0.6 < solidZ + 1.1) && (vel.getZ() < 0)) {
+        //vel.setX(vel.getX()*1);
+        vel.setZ(-vel.getZ());
+        return 1;
+    }
+    
     return 0;
 }
+
+//Colision con paletas y regreso al origen
+int Ball::collisionPaddle(spSolid solid){
+    
+    double ballX = pos.getX();
+    double ballZ = pos.getZ();
+    double solidX = solid->getPos().getX();
+    double solidZ = solid->getPos().getZ();
+    
+    if ((ballZ-0.6 < solidZ + 1) && (ballZ+0.6 > solidZ-1) && (ballX+0.6 < solidX -2.5) && (ballX+0.6 > solidX -2.6) && (vel.getX() > 0)) {
+        vel.setX(-vel.getX());
+        return 1;
+    }
+    
+    if ((ballZ-0.6 < solidZ + 1) && (ballZ+0.6 > solidZ-1) && (ballX-0.6 > solidX +2.5) && (ballX -0.6 < solidX +2.6) && (vel.getX() < 0)) {
+        vel.setX(-vel.getX());
+        return 1;
+    }
+    
+    if ((ballX-0.6 < solidX+2.5) && (ballX+0.6 > solidX-2.5) && (ballZ+0.6 < solidZ - 1) && (ballZ+0.6 > solidZ - 1.1) && (vel.getZ() > 0)) {
+        //vel.setX(vel.getX()*1);
+        vel.setZ(-vel.getZ());
+        return 1;
+    }
+    
+    if ((ballX-0.6 < solidX+2.5) && (ballX+0.6 > solidX-2.5) && (ballZ-0.6 > solidZ + 1) && (ballZ-0.6 < solidZ + 1.1) && (vel.getZ() < 0)) {
+        //vel.setX(vel.getX()*1);
+        vel.setZ(-vel.getZ());
+        return 1;
+    }
+    
+    if(pos.getZ()>19.2){
+        solid->setVel(Vector3Dd(0,0,0));
+        vel = Vector3Dd(0,0,0);
+        pos = Vector3Dd(solidX,0, solidZ - 2);
+        waitingForStart = true;
+    }
+    
+    return 0;
+}
+
+
+
+
 
 #endif /* Ball_h */

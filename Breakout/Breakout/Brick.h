@@ -28,6 +28,7 @@ public:
     virtual spSolid clone();
     inline void render();
     inline void update(double dt);
+    inline int collision(spSolid s);
 private:
 };
 
@@ -45,6 +46,10 @@ void Brick::render(){
     glScalef(5,.5,2);
     glutSolidCube(s);
     glPopMatrix();
+}
+
+int Brick::collision(spSolid s){
+    return 0;
 }
 
 //Checar colisiones con las orillas superior e inferior de la pantalla
