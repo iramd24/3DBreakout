@@ -13,7 +13,7 @@
 #include <cmath>
 
 
-#include "Vector3D.h"
+#include "Vector3d.h"
 #include "Solid.h"
 
 class Cube: public Solid{

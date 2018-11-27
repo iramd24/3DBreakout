@@ -208,49 +208,48 @@ int main(int argc, char** argv) {
     ball = make_shared<Ball> ();
     ball->setPos(Vector3Dd(0,0,0));
     ball->setVel(Vector3Dd(0,0, 0));
-    ball->setCol(Vector3Dd(1,0,1));
+    ball->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
     ball->setF(Vector3Dd(0,-0.98,0));
     ball->setM(1);
     ball->setR(.6);
     
     e.add(ball);
     
-    /* f= make_shared<Sphere> ();
-     f->setPos(Vector3Dd(0,0,17));
-     f->setVel(Vector3Dd(-3,0, 5));
-     f->setCol(Vector3Dd(1,0,1));
-     f->setF(Vector3Dd(0,-0.98,0));
-     f->setM(1);
-     f->setR(.6);
-     e.add(f);
-     
-     f= make_shared<Sphere> ();
-     f->setPos(Vector3Dd(0,0,-17));
-     f->setVel(Vector3Dd(4,0, 5));
-     f->setCol(Vector3Dd(1,0,1));
-     f->setF(Vector3Dd(0,-0.98,0));
-     f->setM(1);
-     f->setR(.6);
-     e.add(f);*/
-    
     
     paddle = make_shared<Paddle> ();
     paddle->setPos(Vector3Dd(0,0,17));
     paddle->setVel(Vector3Dd(0,0,0));
-    paddle->setCol(Vector3Dd(1,0,0));
+    paddle->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
     paddle->setF(Vector3Dd(0,-0.98,0));
     paddle->setM(1);
     paddle->setS(1);
     e.add(paddle);
     
-    shared_ptr<Brick> brick = make_shared<Brick> ();
-    brick->setPos(Vector3Dd(-30,0,0));
-    brick->setVel(Vector3Dd(0,0,0));
-    brick->setCol(Vector3Dd(0,0,1));
-    brick->setF(Vector3Dd(0,-0.98,0));
-    brick->setM(1);
-    brick->setS(1);
-    e.add(brick);
+    for (int i=0; i<11; i++) {
+        for (int j=0; j<5; j++) {
+            shared_ptr<Brick> brick = make_shared<Brick> ();
+            brick->setPos(Vector3Dd(-30+(i*6),0,-17 + (j*3)));
+            brick->setVel(Vector3Dd(0,0,0));
+            
+           
+            if (j==0){
+                brick->setCol(Vector3Dd(29.0/255.0, 194.0/255.0, 66.0/255.0));
+            } else if (j==1){
+                brick->setCol(Vector3Dd(255.0/255.0, 182.0/255.0, 0.0));
+            } else if (j==2){
+               brick->setCol(Vector3Dd(247.0/255.0, 0.0, 30.0/255.0));
+            } else if (j==3){
+                brick->setCol(Vector3Dd(166.0/255.0, 36.0/255.0, 152.0/255.0));
+            } else if (j==4){
+                brick->setCol(Vector3Dd(0.0, 158.0/255.0, 226.0/255.0));
+            }
+            brick->setF(Vector3Dd(0,-0.98,0));
+            brick->setM(1);
+            brick->setS(1);
+            e.add(brick);
+        }
+    }
+    
     
     
     

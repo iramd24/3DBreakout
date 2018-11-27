@@ -38,8 +38,8 @@ void Ball::update(double dt){
     vel=vel+f/m*dt;
     pos=pos+vel*dt;
     
-    //Checa colisiones conla parate superior e inferior de la pantalla
-    if(abs(pos.getZ())>19.2){
+    //Checa colisiones conla parate superior
+    if(-pos.getZ()>19.2){
         vel.setZ(vel.getZ()*-1);
     }
     
