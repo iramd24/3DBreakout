@@ -14,27 +14,27 @@
 #include <cmath>
 
 #include "Vector3D.h"
-#include "Esfera.h"
-#include "Solido.h"
-class Pelota: public Esfera{
+#include "Sphere.h"
+#include "Solid.h"
+class Ball: public Sphere{
     //No encapsulado
 public:
-    Pelota():Esfera(){};
-    Pelota(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double r):Esfera(p, v, c, f, m, r){};
-    Pelota(const Pelota &e): Esfera(e){};
-    spSolido clone();
+    Ball():Sphere(){};
+    Ball(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double r):Sphere(p, v, c, f, m, r){};
+    Ball(const Ball &e): Sphere(e){};
+    spSolid clone();
     inline void update(double dt);
-    inline int colision(spSolido s, bool derecha);
+    inline int colision(spSolid s, bool derecha);
     
 };
 
-spSolido Pelota::clone(){
-    shared_ptr<Pelota> e=make_shared<Pelota>(*this);
-    //return new Esfera(*this);
+spSolid Ball::clone(){
+    shared_ptr<Ball> e=make_shared<Ball>(*this);
+    //return new Sphere(*this);
     return e;
 }
 
-void Pelota::update(double dt){
+void Ball::update(double dt){
     vel=vel+f/m*dt;
     pos=pos+vel*dt;
     
@@ -50,8 +50,8 @@ void Pelota::update(double dt){
 }
 
 //Colision con paletas y regreso al origen
-int Pelota::colision(spSolido s, bool derecha){
-    //cout<< "Esfera " << pos << endl;
+int Ball::colision(spSolid s, bool derecha){
+    //cout<< "Sphere " << pos << endl;
     //cout << "paleta " << s->getPos() << endl;
     //cout << "pos " << pos << endl;
     //if(pos.getX()<s->getPos().getX()+2 && pos.getX()>s->getPos().getX()-2  && pos.getZ()==s->getPos().getZ()-3.5 && this->getVel().getZ() > 0)
