@@ -33,33 +33,7 @@ void renderScene(void)
     gluLookAt(    0.0f, 2.0f,  3.0f,
               0.0f, 0.25f,  0.0f,
               0.0f, 10.0f,  0.0f);
-    
-    glRotatef(angle, 0.0f, 1.0f, 0.0f);
-    
-    
-    glColor3f(1.0f, 0.35f, 0.4f);
-    glutSolidSphere(.3,50,50);
-    
-    glTranslatef(0.6f, 0.0f, 0);
-    glColor3f(0.5f, 0.4f, 0.35f);
-    glutSolidSphere(.2,50,50);
-    glTranslatef(-0.6f, 0.0f, 0);
-    
-    glRotatef(angle2, 0.0f, 1.0f, 0.0f);
-    
-    glTranslatef(1.4f, 0.0f, 0);
-    glRotatef(angle, 0.0f, 1.0f, 0.0f);
-    glColor3f(0.35f, 1.0f, 0.4f);
-    glutSolidSphere(.2,50,50);
-    glTranslatef(-1.4f, 0.0f, 0);
-    
-    glTranslatef(1.0f, 0.0f, 0);
-    glColor3f(0.4f, 0.35f, 1.0f);
-    glutSolidSphere(.07,50,50);
-    glTranslatef(-1.0f, 0.0f, 0);
-    
-    angle+=0.1f;
-    angle2+=0.01f;
+
     glutSwapBuffers();
 }
 
@@ -76,9 +50,7 @@ void processNormalKeys(unsigned char key, int x, int y)
 
 void processSpecialKeys(int key, int xx, int yy)
 {
-    
-    float fraction = 0.1f;
-    
+
     switch (key) {
         case GLUT_KEY_LEFT :
             
@@ -124,8 +96,8 @@ int main(int argc, char **argv)
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(100,100);
-    glutInitWindowSize(320,320);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(720, 720);
     glutCreateWindow("Lighthouse3D - GLUT Tutorial");
     
     // register callbacks

@@ -13,14 +13,14 @@
 #include <cmath>
 
 #include "Vector3D.h"
-#include "Solido.h"
-class Sphere: public Solido{
+#include "Solid.h"
+class Sphere: public Solid{
     //No encapsulado
 public:
     Sphere();
     Sphere(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double r);
     Sphere(const Sphere &e);
-    virtual spSolido clone();
+    virtual spSolid clone();
     inline double getR();
     inline void setR(double r);
     inline void render();
@@ -31,21 +31,21 @@ protected:
     double r;
 };
 
-Sphere:: Sphere(): Solido(){
+Sphere:: Sphere(): Solid(){
     this->r = .5;
 }
 
-Sphere:: Sphere(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double r): Solido(p, v, c, f, m){
+Sphere:: Sphere(Vector3Dd p, Vector3Dd v, Vector3Dd c, Vector3Dd f, double m, double r): Solid(p, v, c, f, m){
     this->r = r;
 }
 
-spSolido Sphere::clone(){
+spSolid Sphere::clone(){
     shared_ptr<Sphere> e=make_shared<Sphere>(*this);
     //return new Sphere(*this);
     return e;
 }
 
-Sphere:: Sphere(const Sphere &e): Solido(e){
+Sphere:: Sphere(const Sphere &e): Solid(e){
     this->r = e.r;
 }
 
