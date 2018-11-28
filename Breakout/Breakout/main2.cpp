@@ -84,17 +84,20 @@ void computePos(float deltaMove) {
 }
 
 void displayMe(void){
-    
     if (deltaMove)
         computePos(deltaMove);
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    
+    
+    
+    
     if (pause) {
         // Set the camera
         gluLookAt(    x, z, 0.0f,
                   x+lx, 0.0+lz,  0.0f,
-                  0.0f, 0.0f,  -51.0f);
+                  0.0f, 0.0f,  -1.0f);
     } else {
         cam.render();
     }
@@ -135,12 +138,6 @@ void idle(){
 
 void keyPressed(unsigned char key,int x,int y){
     switch(key){
-        case 's': case 'S':
-            e.saveScene();
-            break;
-        case 'l': case 'L':
-            e.loadScene();
-            break;
         case 'p': case 'P':
             pause = !pause;
             if (pause) {
@@ -189,6 +186,7 @@ void pressKey(int key, int xx, int yy) {
             break;
         case GLUT_KEY_UP : deltaMove = 0.5f; break;
         case GLUT_KEY_DOWN : deltaMove = -0.5f; break;
+            
     }
 }
 
@@ -260,12 +258,13 @@ int main(int argc, char** argv) {
     
     cam.setRot(Vector3Dd(0, 0, 90));
     cam.setPos(Vector3Dd(0,35,0));
-   
     
     ball = make_shared<Ball> ();
     ball->setPos(Vector3Dd(0,0,15));
     ball->setVel(Vector3Dd(0,0,0));
     ball->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
+    ball->setF(Vector3Dd(0,-0.98,0));
+    ball->setM(1);
     ball->setR(.6);
     e.ball = ball;
     
@@ -273,6 +272,8 @@ int main(int argc, char** argv) {
     paddle->setPos(Vector3Dd(0,0,17));
     paddle->setVel(Vector3Dd(0,0,0));
     paddle->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
+    paddle->setF(Vector3Dd(0,-0.98,0));
+    paddle->setM(1);
     paddle->setS(1);
     e.paddle = paddle;
     
@@ -288,12 +289,14 @@ int main(int argc, char** argv) {
             } else if (j==1){
                 brick->setCol(Vector3Dd(255.0/255.0, 182.0/255.0, 0.0));
             } else if (j==2){
-               brick->setCol(Vector3Dd(247.0/255.0, 0.0, 30.0/255.0));
+                brick->setCol(Vector3Dd(247.0/255.0, 0.0, 30.0/255.0));
             } else if (j==3){
                 brick->setCol(Vector3Dd(166.0/255.0, 36.0/255.0, 152.0/255.0));
             } else if (j==4){
                 brick->setCol(Vector3Dd(0.0, 158.0/255.0, 226.0/255.0));
             }
+            brick->setF(Vector3Dd(0,-0.98,0));
+            brick->setM(1);
             brick->setS(1);
             e.add(brick);
         }

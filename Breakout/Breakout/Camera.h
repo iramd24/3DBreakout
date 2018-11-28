@@ -43,21 +43,4 @@ Camera::~Camera() {
     // TODO Auto-generated destructor stub
 }
 
-class CameraPause : public Camera {
-public:
-    CameraPause(double x = 0, double y = 1.65, double z = 0) :Camera(x, y, z) {}
-    void update(double dt) {
-        double ry = rot2rad(getRot().getY());
-        double rx = rot2rad(getRot().getX());
-        Vector3D<double> vel = { -sin(ry)*cos(rx),sin(rx),cos(ry)*cos(rx) };
-        setPos(getPos() - vel*dt);
-    }
-    void render() {
-        glRotatef(getRot().getX(), 1, 0, 0);
-        glRotatef(getRot().getY(), 0, 1, 0);
-        glRotatef(getRot().getZ(), 0, 0, 1);
-        glTranslatef(-getPos().getX(), -getPos().getY(), -getPos().getZ());
-    }
-};
-
 #endif /* Camera_h */

@@ -43,7 +43,7 @@ void Paddle::render(){
     glPushMatrix();
     glColor3f(col.getX(),col.getY(),col.getZ());
     glTranslatef(pos.getX(),pos.getY(),pos.getZ());
-    glScalef(5,.5,2);
+    glScalef(5,1,2);
     glutSolidCube(s);
     glPopMatrix();
 }
