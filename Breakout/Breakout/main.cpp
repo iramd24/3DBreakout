@@ -45,6 +45,10 @@ shared_ptr<Paddle> paddle;
 vector<shared_ptr<Brick>> bricks;
 shared_ptr<Ball> ball;
 
+bool pause = false;
+Vector3Dd ballVel;
+
+
 int ji=0, jd=0, punto =0;
 
 int mx=-1,my=-1;        // Previous mouse coordinates
@@ -80,11 +84,6 @@ void idle(){
         cout << "Pulse 'Z' para lanzar la Ball" << endl;
     }
     
-    
-    
-    
-    
-//    ball->colision(c1, false);
     if(punto==1){
         ji++;
         cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
@@ -93,28 +92,28 @@ void idle(){
         cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
     }
     
-    
-    
     t+=dt;
     e.update(dt);
     displayMe();
 }
-double getRand(double max, double min = 0) {
-    srand(10);
-    double n = max - min;
-    int ir = rand() % 1000;
-    return min + (double)ir / 1000 * n;
-}
+
 
 void keyPressed(unsigned char key,int x,int y){
-    srand(time(NULL));
-
     switch(key){
+        case 'p': case 'P':
+            pause = !pause;
+            if (pause) {
+                // Change to pause camera
+                ballVel = e.ball->getVel();
+                e.ball->setVel(Vector3Dd(0,0,0));
+            } else {
+                // Go back to game camera
+                e.ball->setVel(ballVel);
+            }
         case 32:
             if(ball->waitingForStart){
                 ball->waitingForStart = false;
-                ball->setVel(Vector3Dd(-0.3,0,-0.3
-                ));
+                ball->setVel(Vector3Dd(-0.3, 0, -0.3));
             }
             break;
         case 27:
