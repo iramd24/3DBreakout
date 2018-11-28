@@ -42,10 +42,10 @@ using namespace std;
 float angle = 0.0f;
 
 // actual vector representing the camera's direction
-float lx=0.0f,lz=1.0f;
+float lx=-19.063153f,lz= -37.01777f;
 
 // XZ position of the camera
-float x=10.0f, z=35.0f;
+float x=18.7079f, z=36.083f;
 
 // the key states. These variables will be zero
 //when no key is being presses
@@ -91,11 +91,11 @@ void renderScene(void){
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    
     if (pause) {
-        // Set the camera
-        gluLookAt(    x, z, 0.0f,
-                  x+lx, 0.0+lz,  0.0f,
-                  0.0f, 0.0f,  -51.0f);
+        gluLookAt(    x, z, 1.0f,
+                  x+lx, z+lz, 1.0f,
+                  0.0f, 0.0f,  -1.0f);
     } else {
         cam.render();
     }
@@ -119,10 +119,13 @@ void pressNormalKey(unsigned char key,int x,int y){
             if (pause) {
                 // Change to pause camera
                 ballVel = scene.ball->getVel();
+                cout << ballVel << endl;
                 scene.ball->setVel(Vector3Dd(0,0,0));
             } else {
                 // Go back to game camera
-                scene.ball->setVel(ballVel);
+                cout << ballVel << endl;
+                scene.ball->setVel(Vector3Dd(ballVel.getX(),0,ballVel.getZ()));
+                cout << scene.ball->getVel() << endl;
             }
             break;
         case 32:
