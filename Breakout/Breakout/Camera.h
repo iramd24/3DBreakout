@@ -8,8 +8,10 @@
 
 #ifndef Camera_h
 #define Camera_h
+#include "Vector3d.h"
+double PI = M_PI;
+inline double rot2rad(double  a){return a/180*PI;}
 
-double PI = 3.14159;
 
 class Camera {
     Vector3D<double> pos;
@@ -40,5 +42,22 @@ Camera::Camera() {
 Camera::~Camera() {
     // TODO Auto-generated destructor stub
 }
+
+class CameraPause : public Camera {
+public:
+    CameraPause(double x = 0, double y = 1.65, double z = 0) :Camera(x, y, z) {}
+    void update(double dt) {
+        double ry = rot2rad(getRot().getY());
+        double rx = rot2rad(getRot().getX());
+        Vector3D<double> vel = { -sin(ry)*cos(rx),sin(rx),cos(ry)*cos(rx) };
+        setPos(getPos() - vel*dt);
+    }
+    void render() {
+        glRotatef(getRot().getX(), 1, 0, 0);
+        glRotatef(getRot().getY(), 0, 1, 0);
+        glRotatef(getRot().getZ(), 0, 0, 1);
+        glTranslatef(-getPos().getX(), -getPos().getY(), -getPos().getZ());
+    }
+};
 
 #endif /* Camera_h */

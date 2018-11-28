@@ -56,14 +56,14 @@ int mx=-1,my=-1;        // Previous mouse coordinates
 
 Scene e;
 Camera cam;
-
+CameraPause camPause;
 
 void displayMe(void){
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     if (pause) {
-        
+        camPause.render();
     } else {
         cam.render();
     }
@@ -168,10 +168,10 @@ void mouseMoved(int x, int y)
 {
     if (mx>=0 && my>=0) {
         Vector3Dd r;
-        cout << cam.getRot() << endl;
-        r=cam.getRot()+Vector3Dd(y-my,x-mx,0);
+        cout << camPause.getRot() << endl;
+        r=camPause.getRot()+Vector3Dd(y-my,x-mx,0);
         cout << r << endl;
-        cam.setRot(r);
+        camPause.setRot(r);
     }
     mx = x;
     my = y;
@@ -214,6 +214,8 @@ int main(int argc, char** argv) {
     
     cam.setRot(Vector3Dd(0, 0, 90));
     cam.setPos(Vector3Dd(0,35,0));
+    camPause.setRot(Vector3Dd(0, 0, 90));
+    camPause.setPos(Vector3Dd(0,35,0));
     
     ball = make_shared<Ball> ();
     ball->setPos(Vector3Dd(0,0,15));
