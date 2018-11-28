@@ -202,6 +202,11 @@ void reshape(int width,int height){
 
 
 int main(int argc, char** argv) {
+    int brickRows = 1; // From 1 to 5
+    cout << "Type the number of rows you want for your bricks (1 to 5 only)" << endl;
+    cin >> brickRows;
+    
+    
     cam.setRot(Vector3Dd(0, 0, 90));
     cam.setPos(Vector3Dd(0,35,0));
     
@@ -224,7 +229,7 @@ int main(int argc, char** argv) {
     e.paddle = paddle;
     
     for (int i=0; i<11; i++) {
-        for (int j=0; j<5; j++) {
+        for (int j=0; j<brickRows; j++) {
             shared_ptr<Brick> brick = make_shared<Brick> ();
             bricks.push_back(brick);
             brick->setPos(Vector3Dd(-30+(i*6),0,-17 + (j*3)));
