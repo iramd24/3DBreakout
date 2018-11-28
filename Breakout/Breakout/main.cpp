@@ -62,7 +62,11 @@ void displayMe(void){
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    cam.render();
+    if (pause) {
+        
+    } else {
+        cam.render();
+    }
     GLfloat lightpos[]={5.0,15.0,5.0,0.0};
     glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
     e.render();
@@ -164,6 +168,7 @@ void mouseMoved(int x, int y)
 {
     if (mx>=0 && my>=0) {
         Vector3Dd r;
+        cout << cam.getRot() << endl;
         r=cam.getRot()+Vector3Dd(y-my,x-mx,0);
         cout << r << endl;
         cam.setRot(r);
@@ -271,8 +276,8 @@ int main(int argc, char** argv) {
     
     glutSpecialFunc(pressKey);
     glutSpecialUpFunc(releaseKey);
-    //glutMotionFunc(&mouseMoved);
-    //glutMouseFunc(&mousePress);
+    glutMotionFunc(&mouseMoved);
+    glutMouseFunc(&mousePress);
     glutMainLoop();
     
     
