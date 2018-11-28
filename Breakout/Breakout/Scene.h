@@ -119,7 +119,7 @@ public:
                 brick->setS(1);
                 
                 bricks.push_back(brick);
-                //bricks.push()
+                
             }
             gameFile.close();
         } else {

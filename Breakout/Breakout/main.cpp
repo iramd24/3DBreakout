@@ -62,19 +62,18 @@ double t=0.0;
 double dt=1.0/30;
 GLdouble pitch=0.0f;
 shared_ptr<Paddle> paddle;
-vector<shared_ptr<Brick>> bricks;
 shared_ptr<Ball> ball;
 
 bool pause = false;
+
 Vector3Dd ballVel;
 
 
 int ji=0, jd=0, punto =0;
 
 int mx=-1,my=-1;        // Previous mouse coordinates
-//int rotangles[2] = {0}; // Panning angles
 
-Scene e;
+Scene scene;
 Camera cam;
 
 void computePos(float deltaMove) {
@@ -83,7 +82,9 @@ void computePos(float deltaMove) {
     z += deltaMove * lz * 0.1f;
 }
 
-void displayMe(void){
+void renderScene(void){
+    t+=dt;
+    scene.update(dt);
     
     if (deltaMove)
         computePos(deltaMove);
@@ -100,56 +101,28 @@ void displayMe(void){
     }
     GLfloat lightpos[]={5.0,15.0,5.0,0.0};
     glLightfv(GL_LIGHT0,GL_POSITION,lightpos);
-    e.render();
+    scene.render();
     glutSwapBuffers();
 }
 
-void idle(){
-    if(ji==7){
-        ji=0;
-        jd=0;
-        cout << "Jugador Izquierda es el ganador" << endl;
-        cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
-        cout << "Pulse 'Z' para lanzar la Ball" << endl;
-    } else if(jd==7){
-        ji=0;
-        jd=0;
-        cout << "Jugador Derecha es el ganador" << endl;
-        cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
-        cout << "Pulse 'Z' para lanzar la Ball" << endl;
-    }
-    
-    if(punto==1){
-        ji++;
-        cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
-    } else if(punto==2){
-        jd++;
-        cout << "Jugador Izquierda=> " << ji << " || " << jd << "<= Jugador Derecha" << endl;
-    }
-    
-    t+=dt;
-    e.update(dt);
-    displayMe();
-}
 
-
-void keyPressed(unsigned char key,int x,int y){
+void pressNormalKey(unsigned char key,int x,int y){
     switch(key){
         case 's': case 'S':
-            e.saveScene();
+            scene.saveScene();
             break;
         case 'l': case 'L':
-            e.loadScene();
+            scene.loadScene();
             break;
         case 'p': case 'P':
             pause = !pause;
             if (pause) {
                 // Change to pause camera
-                ballVel = e.ball->getVel();
-                e.ball->setVel(Vector3Dd(0,0,0));
+                ballVel = scene.ball->getVel();
+                scene.ball->setVel(Vector3Dd(0,0,0));
             } else {
                 // Go back to game camera
-                e.ball->setVel(ballVel);
+                scene.ball->setVel(ballVel);
             }
             break;
         case 32:
@@ -164,7 +137,7 @@ void keyPressed(unsigned char key,int x,int y){
     }
 }
 
-void keyReleased(unsigned char key,int x,int y){
+void releaseNormalKey(unsigned char key,int x,int y){
     switch(key){
         case 27:
             exit(0);
@@ -236,8 +209,6 @@ void mouseButton(int button, int state, int x, int y) {
     }
 }
 
-
-
 const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
 const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -273,83 +244,88 @@ void init(void){
     glEnable(GL_COLOR_MATERIAL);
     glClearColor(0.0,0.0,0.0,0.0);*/
 }
-void reshape(int width,int height){
+void changeSize(int width,int height){
     glViewport(0,0,width,height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.1f,200.0f);
+    gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
     glMatrixMode(GL_MODELVIEW);
-    
 }
 
-
-int main(int argc, char** argv) {
-    int brickRows = 1; // From 1 to 5
-    cout << "Type the number of rows you want for your bricks (1 to 5 only)" << endl;
-    cin >> brickRows;
-    
-    
+void setupScene(int brickRows) {
+    // Setup game camera
     cam.setRot(Vector3Dd(0, 0, 90));
     cam.setPos(Vector3Dd(0,35,0));
-   
     
+    // Setup ball
     ball = make_shared<Ball> ();
     ball->setPos(Vector3Dd(0,0,15));
     ball->setVel(Vector3Dd(0,0,0));
     ball->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
     ball->setR(.6);
-    e.ball = ball;
+    scene.ball = ball;
     
+    // Setup paddle
     paddle = make_shared<Paddle> ();
     paddle->setPos(Vector3Dd(0,0,17));
     paddle->setVel(Vector3Dd(0,0,0));
     paddle->setCol(Vector3Dd(200.0/255.0, 200.0/255.0, 200.0/255.0));
     paddle->setS(1);
-    e.paddle = paddle;
+    scene.paddle = paddle;
     
     for (int i=0; i<11; i++) {
         for (int j=0; j<brickRows; j++) {
             shared_ptr<Brick> brick = make_shared<Brick> ();
-            bricks.push_back(brick);
             brick->setPos(Vector3Dd(-30+(i*6),0,-17 + (j*3)));
             brick->setVel(Vector3Dd(0,0,0));
-            
+            brick->setS(1);
             if (j==0){
                 brick->setCol(Vector3Dd(29.0/255.0, 194.0/255.0, 66.0/255.0));
             } else if (j==1){
                 brick->setCol(Vector3Dd(255.0/255.0, 182.0/255.0, 0.0));
             } else if (j==2){
-               brick->setCol(Vector3Dd(247.0/255.0, 0.0, 30.0/255.0));
+                brick->setCol(Vector3Dd(247.0/255.0, 0.0, 30.0/255.0));
             } else if (j==3){
                 brick->setCol(Vector3Dd(166.0/255.0, 36.0/255.0, 152.0/255.0));
             } else if (j==4){
                 brick->setCol(Vector3Dd(0.0, 158.0/255.0, 226.0/255.0));
             }
-            brick->setS(1);
-            e.add(brick);
+            scene.add(brick);
         }
     }
+}
+
+
+int main(int argc, char** argv) {
+    int brickRows = 1; // From 1 to 5
+    cout << "Type the number of rows you want for your bricks (1 to 5 only):" << endl;
+    cin >> brickRows;
     
-    
-    
+    setupScene(brickRows);
     
     glutInit(&argc, argv);
-    //glutInitDisplayMode(GLUT_SINGLE);
+    
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(680,400);
     glutInitWindowPosition(300,300);
     glutCreateWindow("3D Breakout");
     init();
-    glutDisplayFunc(displayMe);
-    glutIdleFunc(idle);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyPressed);
-    glutKeyboardUpFunc(keyReleased);
     
+    glutDisplayFunc(renderScene);
+    glutReshapeFunc(changeSize);
+    glutIdleFunc(renderScene);
+    
+    glutIgnoreKeyRepeat(1);
+    glutKeyboardFunc(pressNormalKey);
+    glutKeyboardUpFunc(releaseNormalKey);
     glutSpecialFunc(pressKey);
     glutSpecialUpFunc(releaseKey);
+    
     glutMouseFunc(mouseButton);
     glutMotionFunc(mouseMove);
+    
+    glEnable(GL_DEPTH_TEST);
+    
     glutMainLoop();
     
     
