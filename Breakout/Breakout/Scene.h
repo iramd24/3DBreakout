@@ -9,6 +9,10 @@
 #ifndef Scene_h
 #define Scene_h
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include <vector>
 #include "Vector3d.h"
 #include "Cube.h"
@@ -54,22 +58,74 @@ public:
             }
             i++;
         }
+        
         for (int i=0; i<eraser.size(); i++) {
             bricks.erase(bricks.begin()+(eraser[i]-i));
         }
         
-        
-        
         ball->update(dt);
         paddle->update(dt);
-        for(spSolid brick:bricks)
+        for(spSolid brick:bricks){
             brick->update(dt);
-        
-        
+        }
+    
     }
     
-    //vector<spSolid> getSolids(){return solids;}
-    void add(spSolid s){bricks.push_back(s);}
+    void add(spSolid s){
+        bricks.push_back(s);
+    }
+    
+    void saveScene(){
+        ofstream gameFile;
+        gameFile.open ("game.txt");
+        for(spSolid brick:bricks){
+            gameFile << brick->getPos() << brick->getCol() << endl;
+        }
+        gameFile.close();
+    }
+    
+    void loadScene() {
+        //string brString = "(-30, 0, -17)(0.113725, 0.760784, 0.258824)";
+        string line;
+        ifstream gameFile ("game.txt");
+        if (gameFile.is_open()) {
+            bricks.clear();
+            while (getline (gameFile,line)) {
+                line.erase(std::remove(line.begin(), line.end(), ','), line.end());
+                size_t pos1 = line.find('(');
+                size_t pos2 = line.find(')');
+                string pos = line.substr(pos1+1, pos2-1);
+                
+                string col = line.substr(pos2+2);
+                col.pop_back();
+                cout << "Pos:"<<pos << "Col:"<<col << '\n';
+                
+                std::stringstream posStream(pos);
+                std::stringstream colStream(col);
+                
+                double p1, p2, p3, c1, c2, c3;
+                posStream >> p1;
+                posStream >> p2;
+                posStream >> p3;
+                
+                colStream >> c1;
+                colStream >> c2;
+                colStream >> c3;
+                shared_ptr<Brick> brick = make_shared<Brick> ();
+                
+                brick->setPos(Vector3Dd(p1, p2, p3));
+                brick->setVel(Vector3Dd(0,0,0));
+                brick->setCol(Vector3Dd(c1, c2, c3));
+                brick->setS(1);
+                
+                bricks.push_back(brick);
+                //bricks.push()
+            }
+            gameFile.close();
+        } else {
+            cout << "Unable to open file";
+        }
+    }
 };
 
 Scene::Scene() {

@@ -53,7 +53,7 @@ Solid:: Solid(){
     this->pos = Vector3Dd(0,0,0);
     this->vel = Vector3Dd(0,0,0);
     this->col = Vector3Dd(0,0,0);
-    this->f  = Vector3Dd(0,0,0);
+    this->f  = Vector3Dd(0,-0.98,0);
     this->m = 1;
 }
 
