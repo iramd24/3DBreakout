@@ -114,6 +114,7 @@ void keyPressed(unsigned char key,int x,int y){
                 // Go back to game camera
                 e.ball->setVel(ballVel);
             }
+            break;
         case 32:
             if(ball->waitingForStart){
                 ball->waitingForStart = false;
@@ -166,16 +167,17 @@ void releaseKey(int key, int x, int y) {
 }
 void mouseMoved(int x, int y)
 {
-    if (mx>=0 && my>=0) {
-        Vector3Dd r;
-        cout << camPause.getRot() << endl;
-        r=camPause.getRot()+Vector3Dd(y-my,x-mx,0);
-        cout << r << endl;
-        camPause.setRot(r);
+    if (pause) {
+        if (mx>=0 && my>=0) {
+            Vector3Dd r;
+            cout << camPause.getRot() << endl;
+            r=camPause.getRot()+Vector3Dd(y-my,x-mx,0);
+            cout << r << endl;
+            camPause.setRot(r);
+        }
+        mx = x;
+        my = y;
     }
-    mx = x;
-    my = y;
-    
 }
 
 void mousePress(int button, int state, int x, int y)
